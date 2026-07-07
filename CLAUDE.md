@@ -28,6 +28,9 @@ tracks competitor channels, sees their uploads on a colored-dot **timeline**, an
 - `lib/sync.ts` — `syncCompetitor()` core (fetch + upsert), reused by manual sync and the cron.
 - `app/api/cron/sync/route.ts` — daily sync endpoint (auth `Bearer $CRON_SECRET`), logs to `sync_runs`.
 - `vercel.json` — Vercel Cron hits `/api/cron/sync` daily at 03:00 UTC.
+- `lib/ai/` — provider-swappable AI layer: `chat()` (`index.ts`), `anthropic.ts` adapter, `context.ts`
+  (grounds the system prompt in the caller's competitors/videos, RLS-scoped). Default `claude-opus-4-8`.
+- `app/api/assistant/route.ts` — chat endpoint; persists to `ai_conversations`/`ai_messages`.
 - `lib/queries.ts` — server read helpers + `computeDashboard()` aggregates. `lib/format.ts` — `fmtViews`.
 - `app/actions/competitors.ts` — add/remove/sync competitor server actions.
 - `components/ui/` — `Sidebar`, `Topbar`, `Card`+`StatusPill`, `Charts` (SVG bar/area), `Placeholder`.
@@ -47,9 +50,10 @@ left icon sidebar; status pills (hot=lavender, rising=green, flat=grey).
 - `profiles.role` is the source of truth; `private.is_admin()` (SECURITY DEFINER) drives admin RLS bypass.
 
 ## Setup (user does this)
-1. `.env.local`: Supabase URL + anon + service-role keys, `YOUTUBE_API_KEY`, `CRON_SECRET`.
+1. `.env.local`: Supabase URL + anon + service-role keys, `YOUTUBE_API_KEY`, `CRON_SECRET`,
+   `ANTHROPIC_API_KEY` (+ `AI_PROVIDER=anthropic`).
 2. Run migrations in the Supabase SQL Editor in order: `0001_auth_profiles.sql`,
-   `0002_competitors_videos.sql`, `0003_sync_runs.sql`.
+   `0002_competitors_videos.sql`, `0003_sync_runs.sql`, `0004_ai_chat.sql`.
 3. Supabase Auth → Providers: enable **Google** (Client ID/Secret from Google Cloud Console;
    redirect URL `<SUPABASE_URL>/auth/v1/callback`).
 4. Sign in once with the admin email (creates the admin profile), THEN Supabase Auth →
@@ -67,4 +71,5 @@ left icon sidebar; status pills (hot=lavender, rising=green, flat=grey).
 - **Phase 4 (done):** daily auto-sync via Vercel Cron → `/api/cron/sync`, `sync_runs` log (`0003`),
   Settings page shows account + sync history. Deploy note: set `CRON_SECRET` in Vercel env; cron runs
   only on production deploys.
-- **Phase 5 (todo):** AI assistant wired to each customer's data.
+- **Phase 5 (done):** AI assistant grounded in each customer's data (`lib/ai/*`, `/api/assistant`),
+  chat history in `ai_conversations`/`ai_messages` (`0004`), assistant chat UI, admin sees convo titles.

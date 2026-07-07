@@ -21,7 +21,7 @@ export default async function ManageUserPage({
   if (!u) notFound();
 
   // Admin RLS bypass lets us read this customer's data.
-  const [{ data: comps }, { data: vids }] = await Promise.all([
+  const [{ data: comps }, { data: vids }, { data: convos }] = await Promise.all([
     supabase
       .from("competitors")
       .select("id, channel_title, color, last_synced_at")
@@ -34,6 +34,12 @@ export default async function ManageUserPage({
       )
       .eq("owner_id", id)
       .order("published_at", { ascending: false })
+      .limit(8),
+    supabase
+      .from("ai_conversations")
+      .select("id, title, updated_at")
+      .eq("owner_id", id)
+      .order("updated_at", { ascending: false })
       .limit(8),
   ]);
 
@@ -190,6 +196,30 @@ export default async function ManageUserPage({
           </table>
         ) : (
           <p className="text-sm text-neutral-400">No videos synced yet.</p>
+        )}
+      </Card>
+
+      <Card>
+        <h2 className="mb-4 text-lg font-semibold">
+          AI conversations{" "}
+          <span className="text-muted">({convos?.length ?? 0})</span>
+        </h2>
+        {convos && convos.length > 0 ? (
+          <ul className="flex flex-col gap-2">
+            {convos.map((c) => (
+              <li
+                key={c.id}
+                className="flex items-center justify-between rounded-xl bg-panel-2 px-3 py-2 text-sm"
+              >
+                <span className="truncate">{c.title || "Untitled"}</span>
+                <span className="shrink-0 pl-3 text-xs text-faint">
+                  {new Date(c.updated_at).toLocaleDateString()}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-muted">No conversations yet.</p>
         )}
       </Card>
     </div>
