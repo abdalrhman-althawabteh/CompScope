@@ -153,12 +153,12 @@ export default async function ManageUserPage({
         )}
       </Card>
 
-      <Card variant="white">
+      <Card>
         <h2 className="mb-4 text-lg font-semibold">Recent videos</h2>
         {vids && vids.length > 0 ? (
           <table className="w-full text-left">
             <thead>
-              <tr className="text-xs text-neutral-400">
+              <tr className="text-xs text-faint">
                 <th className="pb-3 font-normal">Title</th>
                 <th className="pb-3 font-normal">Channel</th>
                 <th className="pb-3 text-right font-normal">Views</th>
@@ -171,14 +171,14 @@ export default async function ManageUserPage({
                   color: string;
                 } | null;
                 return (
-                  <tr key={v.id} className="border-t border-dashed border-neutral-200">
-                    <td className="max-w-[220px] truncate py-3 pr-3 font-medium text-neutral-900">
+                  <tr key={v.id} className="border-t border-border">
+                    <td className="max-w-[220px] truncate py-3 pr-3 font-medium text-fg">
                       <a href={v.url ?? "#"} target="_blank" rel="noreferrer">
                         {v.title}
                       </a>
                     </td>
                     <td className="py-3 pr-3">
-                      <span className="inline-flex items-center gap-1.5 text-sm text-neutral-600">
+                      <span className="inline-flex items-center gap-1.5 text-sm text-muted">
                         <span
                           className="h-2.5 w-2.5 rounded-full"
                           style={{ background: comp?.color ?? "#999" }}
@@ -186,7 +186,7 @@ export default async function ManageUserPage({
                         {comp?.channel_title ?? "—"}
                       </span>
                     </td>
-                    <td className="py-3 text-right font-semibold text-neutral-900">
+                    <td className="py-3 text-right font-semibold text-fg">
                       {fmtViews(v.view_count)}
                     </td>
                   </tr>
@@ -195,7 +195,7 @@ export default async function ManageUserPage({
             </tbody>
           </table>
         ) : (
-          <p className="text-sm text-neutral-400">No videos synced yet.</p>
+          <p className="text-sm text-muted">No videos synced yet.</p>
         )}
       </Card>
 

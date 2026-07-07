@@ -40,8 +40,10 @@ tracks competitor channels, sees their uploads on a colored-dot **timeline**, an
 
 ## Design tokens (from the reference dashboard)
 Dark `#0a0a0a` bg with a warm top-left glow (`.app-glow`); lime accent `#c5f04a`; lavender `#b9a3e3`
-and mint `#b9e6a8` highlight cards; white card for tables; big rounded corners (`--radius-card`);
-left icon sidebar; status pills (hot=lavender, rising=green, flat=grey).
+and mint `#b9e6a8` highlight cards; big rounded corners (`--radius-card`); left icon sidebar; status
+pills (hot=lavender, rising=green, flat=grey). Customer-facing tables (dashboard, competitors,
+settings) use the white `Card` variant; **admin tables are dark** for readability. Topbar shows brand +
+stat + avatar only (no search/notifications).
 
 ## Auth & roles
 - **Admin-only accounts.** No public sign-up — turn **OFF "Allow new users to sign up"** in Supabase

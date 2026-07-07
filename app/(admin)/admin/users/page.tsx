@@ -42,10 +42,10 @@ export default async function AdminUsersPage() {
         <CreateUserForm />
       </Card>
 
-      <Card variant="white">
+      <Card>
         <table className="w-full text-left">
           <thead>
-            <tr className="text-xs text-neutral-400">
+            <tr className="text-xs text-faint">
               <th className="pb-3 font-normal">User</th>
               <th className="pb-3 font-normal">Role</th>
               <th className="pb-3 font-normal">Tier</th>
@@ -55,36 +55,34 @@ export default async function AdminUsersPage() {
           </thead>
           <tbody>
             {users.map((u) => (
-              <tr key={u.id} className="border-t border-dashed border-neutral-200">
+              <tr key={u.id} className="border-t border-border">
                 <td className="py-3.5 pr-3">
-                  <div className="font-medium text-neutral-900">
-                    {u.full_name || "—"}
-                  </div>
-                  <div className="text-sm text-neutral-500">{u.email}</div>
+                  <div className="font-medium text-fg">{u.full_name || "—"}</div>
+                  <div className="text-sm text-muted">{u.email}</div>
                 </td>
                 <td className="py-3.5 pr-3">
                   <span
                     className={
-                      "rounded-full px-3 py-1 text-xs font-medium " +
+                      "rounded-full px-3 py-1 text-xs font-medium capitalize " +
                       (u.role === "admin"
-                        ? "bg-[#efe6ff] text-[#5b3ea6]"
-                        : "bg-neutral-100 text-neutral-600")
+                        ? "bg-lavender/15 text-lavender"
+                        : "bg-panel-2 text-muted")
                     }
                   >
                     {u.role}
                   </span>
                 </td>
-                <td className="py-3.5 pr-3 capitalize text-neutral-700">
+                <td className="py-3.5 pr-3 capitalize text-muted">
                   {u.subscription_tier}
                 </td>
-                <td className="py-3.5 pr-3 capitalize text-neutral-700">
+                <td className="py-3.5 pr-3 capitalize text-muted">
                   {u.subscription_status}
                 </td>
                 <td className="py-3.5">
                   <div className="flex items-center justify-end gap-2">
                     <Link
                       href={`/admin/users/${u.id}`}
-                      className="flex items-center gap-1 rounded-full bg-neutral-900 px-3 py-1.5 text-xs font-medium text-white"
+                      className="flex items-center gap-1 rounded-full bg-panel-2 px-3 py-1.5 text-xs font-medium text-fg hover:bg-[#262626]"
                     >
                       Manage <ChevronRight width={14} height={14} />
                     </Link>
@@ -93,7 +91,7 @@ export default async function AdminUsersPage() {
                         <input type="hidden" name="id" value={u.id} />
                         <button
                           type="submit"
-                          className="rounded-full border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-500 hover:border-flame hover:text-flame"
+                          className="rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted hover:border-flame hover:text-flame"
                         >
                           Delete
                         </button>

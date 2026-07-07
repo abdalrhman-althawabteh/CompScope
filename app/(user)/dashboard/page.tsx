@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Topbar } from "@/components/ui/Topbar";
 import { Card, StatusPill } from "@/components/ui/Card";
 import { BarChart, AreaChart } from "@/components/ui/Charts";
-import { PlusIcon, SparkIcon, ChevronRight, ChevronDown } from "@/components/icons";
+import { SparkIcon, ChevronRight, ChevronDown } from "@/components/icons";
 import { createClient } from "@/lib/supabase/server";
 import { getVideos, computeDashboard, trendOf } from "@/lib/queries";
 import { fmtViews } from "@/lib/format";
@@ -39,27 +39,21 @@ export default async function DashboardPage() {
             Track your competitors and turn their moves into your next hit.
           </p>
         </div>
-        <div className="flex items-stretch gap-3 overflow-x-auto">
-          <Link
-            href="/competitors"
-            className="flex h-full min-h-[92px] w-14 items-center justify-center rounded-2xl bg-white text-black"
-          >
-            <PlusIcon />
-          </Link>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {AI_CARDS.map((c) => (
             <Link
               href="/assistant"
               key={c.title}
-              className="flex min-w-[190px] items-center justify-between gap-4 rounded-2xl border border-border bg-panel px-5"
+              className="flex flex-col gap-2 rounded-2xl border border-border bg-panel p-4 transition-colors hover:border-faint"
             >
-              <div>
-                <div className="flex items-center gap-1.5 font-medium">
-                  {c.title}
-                  <SparkIcon width={16} height={16} className="text-accent" />
-                </div>
-                <div className="mt-1 text-sm text-muted">{c.sub}</div>
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-medium">{c.title}</span>
+                <SparkIcon width={16} height={16} className="text-accent" />
               </div>
-              <ChevronRight width={18} height={18} className="text-faint" />
+              <div className="text-sm text-muted">{c.sub}</div>
+              <div className="mt-auto flex items-center gap-1 pt-2 text-xs text-faint">
+                Open <ChevronRight width={14} height={14} />
+              </div>
             </Link>
           ))}
         </div>

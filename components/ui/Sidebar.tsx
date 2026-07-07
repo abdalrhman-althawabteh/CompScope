@@ -31,10 +31,6 @@ export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
 
   return (
     <aside className="flex w-[68px] shrink-0 flex-col items-center gap-2 py-6">
-      <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-panel-2 text-accent">
-        <span className="text-xs font-semibold">+2</span>
-      </div>
-
       <nav className="flex flex-1 flex-col items-center gap-3">
         {nav.map(({ href, icon: Icon, label }) => {
           const active = pathname === href || pathname.startsWith(href + "/");

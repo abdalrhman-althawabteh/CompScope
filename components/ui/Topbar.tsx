@@ -1,12 +1,6 @@
-import { LogoMark, BellIcon, SearchIcon } from "@/components/icons";
+import { LogoMark } from "@/components/icons";
 
-export function Topbar({
-  stat,
-  notifications = 4,
-}: {
-  stat?: string;
-  notifications?: number;
-}) {
+export function Topbar({ stat }: { stat?: string }) {
   return (
     <header className="flex items-center justify-between gap-4">
       <div className="flex items-center gap-2 text-accent">
@@ -25,16 +19,7 @@ export function Topbar({
         </div>
       )}
 
-      <div className="flex items-center gap-2.5">
-        <button className="relative flex h-10 items-center gap-2 rounded-full border border-border bg-panel px-3 text-muted hover:text-fg">
-          <BellIcon width={18} height={18} />
-          <span className="text-xs font-medium text-fg">+{notifications}</span>
-        </button>
-        <button className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-panel text-muted hover:text-fg">
-          <SearchIcon width={18} height={18} />
-        </button>
-        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-flame to-lavender ring-2 ring-flame/40" />
-      </div>
+      <div className="h-10 w-10 rounded-full bg-gradient-to-br from-flame to-lavender ring-2 ring-flame/40" />
     </header>
   );
 }
