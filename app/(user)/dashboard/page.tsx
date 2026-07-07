@@ -2,64 +2,67 @@ import Link from "next/link";
 import { Topbar } from "@/components/ui/Topbar";
 import { Card, StatusPill } from "@/components/ui/Card";
 import { BarChart, AreaChart } from "@/components/ui/Charts";
-import { SparkIcon, ChevronRight, ChevronDown } from "@/components/icons";
+import { ChevronRight, ChevronDown } from "@/components/icons";
 import { createClient } from "@/lib/supabase/server";
-import { getVideos, computeDashboard, trendOf } from "@/lib/queries";
+import { getCompetitors, getVideos, computeDashboard, trendOf, daysAgoTs } from "@/lib/queries";
 import { fmtViews } from "@/lib/format";
-
-const AI_CARDS = [
-  { title: "Idea Generator", sub: "Fresh video angles" },
-  { title: "Trend Analyzer", sub: "What's spiking now" },
-  { title: "Report AI", sub: "Weekly competitor recap" },
-];
+import { DashboardChat } from "./DashboardChat";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("full_name")
-    .eq("id", user!.id)
-    .single();
+  const [{ data: profile }, competitors, videos] = await Promise.all([
+    supabase.from("profiles").select("full_name").eq("id", user!.id).single(),
+    getCompetitors(supabase),
+    getVideos(supabase, { limit: 200 }),
+  ]);
 
-  const videos = await getVideos(supabase, { limit: 200 });
   const dash = computeDashboard(videos);
   const name = profile?.full_name?.split(" ")[0] || "there";
+  const weekAgo = daysAgoTs(7);
+  const uploadsThisWeek = videos.filter(
+    (v) => v.published_at && new Date(v.published_at).getTime() >= weekAgo,
+  ).length;
+  const stats = [
+    { label: "Competitors tracked", value: String(competitors.length), sub: "channels" },
+    { label: "Uploads this week", value: String(uploadsThisWeek), sub: "last 7 days" },
+    {
+      label: "Avg views / video",
+      value: videos.length ? fmtViews(Math.round(dash.totalViews / videos.length)) : "0",
+      sub: `across ${videos.length} videos`,
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-6">
       <Topbar stat={`${dash.totalViews ? fmtViews(dash.totalViews) : "0"} tracked views`} />
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1fr_minmax(0,560px)]">
-        <div>
+        <div className="rise">
           <h1 className="text-5xl font-semibold tracking-tight">Welcome, {name}!</h1>
           <p className="mt-3 max-w-md text-muted">
             Track your competitors and turn their moves into your next hit.
           </p>
         </div>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {AI_CARDS.map((c) => (
-            <Link
-              href="/assistant"
-              key={c.title}
-              className="flex flex-col gap-2 rounded-2xl border border-border bg-panel p-4 transition-colors hover:border-faint"
+        <div className="stagger grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {stats.map((s) => (
+            <div
+              key={s.label}
+              className="flex flex-col gap-1 rounded-2xl border border-border bg-panel p-4 transition-colors hover:border-faint"
             >
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-medium">{c.title}</span>
-                <SparkIcon width={16} height={16} className="text-accent" />
-              </div>
-              <div className="text-sm text-muted">{c.sub}</div>
-              <div className="mt-auto flex items-center gap-1 pt-2 text-xs text-faint">
-                Open <ChevronRight width={14} height={14} />
-              </div>
-            </Link>
+              <span className="text-sm text-muted">{s.label}</span>
+              <span className="text-3xl font-semibold tracking-tight text-accent">
+                {s.value}
+              </span>
+              <span className="text-xs text-faint">{s.sub}</span>
+            </div>
           ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+      <div className="stagger grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Card>
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-2xl font-semibold">Upload Activity</h2>
@@ -75,7 +78,7 @@ export default async function DashboardPage() {
             <h2 className="text-2xl font-semibold">Latest Videos</h2>
             <Link
               href="/timeline"
-              className="flex items-center gap-1 text-sm text-neutral-500"
+              className="flex items-center gap-1 text-sm text-neutral-500 transition-colors hover:text-neutral-900"
             >
               See all <ChevronRight width={16} height={16} />
             </Link>
@@ -124,20 +127,8 @@ export default async function DashboardPage() {
           )}
         </Card>
 
-        <Card variant="mint" className="relative overflow-hidden">
-          <div className="flex items-center gap-2 text-lg font-semibold">
-            <SparkIcon width={20} height={20} /> AI Suggestion
-          </div>
-          <p className="mt-4 max-w-xs text-[15px] leading-relaxed">
-            Ask the AI to spot patterns across your competitors&rsquo; recent
-            uploads and suggest your next video.
-          </p>
-          <Link
-            href="/assistant"
-            className="mt-6 inline-flex rounded-full bg-black px-6 py-3 text-sm font-medium text-white"
-          >
-            ASK THE AI
-          </Link>
+        <Card variant="mint">
+          <DashboardChat hasCompetitors={competitors.length > 0} />
         </Card>
 
         <Card variant="lavender" className="overflow-hidden">

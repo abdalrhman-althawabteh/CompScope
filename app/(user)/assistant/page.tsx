@@ -30,7 +30,7 @@ export default async function AssistantPage({
   ]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="stagger flex flex-col gap-6">
       <Topbar stat="AI Assistant" />
       <div>
         <h1 className="text-4xl font-semibold tracking-tight">AI Assistant</h1>

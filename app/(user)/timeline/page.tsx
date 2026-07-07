@@ -22,7 +22,7 @@ export default async function TimelinePage() {
   });
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="stagger flex flex-col gap-6">
       <Topbar stat={`${DAYS}-day competitor timeline`} />
       <div>
         <h1 className="text-4xl font-semibold tracking-tight">Timeline</h1>

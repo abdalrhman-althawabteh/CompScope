@@ -16,7 +16,7 @@ export default async function CompetitorsPage() {
   ]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="stagger flex flex-col gap-6">
       <Topbar stat={`${competitors.length} competitors tracked`} />
       <div className="flex items-end justify-between gap-4">
         <div>
@@ -27,7 +27,7 @@ export default async function CompetitorsPage() {
         </div>
         {competitors.length > 0 && (
           <form action={syncAll}>
-            <button className="rounded-full border border-border px-4 py-2 text-sm text-muted hover:text-fg">
+            <button className="rounded-full border border-border px-4 py-2 text-sm text-muted transition-colors hover:border-faint hover:text-fg">
               Sync all now
             </button>
           </form>
@@ -44,10 +44,10 @@ export default async function CompetitorsPage() {
           No competitors yet — add one above to start tracking.
         </Card>
       ) : (
-        <Card variant="white">
+        <Card>
           <table className="w-full text-left">
             <thead>
-              <tr className="text-xs text-neutral-400">
+              <tr className="text-xs text-faint">
                 <th className="pb-3 font-normal">Channel</th>
                 <th className="pb-3 font-normal">Videos</th>
                 <th className="pb-3 font-normal">Last synced</th>
@@ -56,33 +56,44 @@ export default async function CompetitorsPage() {
             </thead>
             <tbody>
               {competitors.map((c) => (
-                <tr key={c.id} className="border-t border-dashed border-neutral-200">
-                  <td className="py-3.5 pr-3">
-                    <span className="inline-flex items-center gap-2 font-medium text-neutral-900">
-                      <span
-                        className="h-3 w-3 rounded-full"
-                        style={{ background: c.color }}
-                      />
+                <tr
+                  key={c.id}
+                  className="border-t border-border transition-colors hover:bg-panel-2/60"
+                >
+                  <td className="py-3 pr-3">
+                    <span className="inline-flex items-center gap-3 font-medium">
+                      {c.thumbnail_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={c.thumbnail_url}
+                          alt=""
+                          className="h-9 w-9 rounded-full border-2 object-cover"
+                          style={{ borderColor: c.color }}
+                        />
+                      ) : (
+                        <span
+                          className="h-9 w-9 rounded-full"
+                          style={{ background: c.color }}
+                        />
+                      )}
                       {c.channel_title || c.handle || "—"}
                     </span>
                   </td>
-                  <td className="py-3.5 pr-3 text-neutral-700">
-                    {counts[c.id] ?? 0}
-                  </td>
-                  <td className="py-3.5 pr-3 text-neutral-500">
+                  <td className="py-3 pr-3 text-muted">{counts[c.id] ?? 0}</td>
+                  <td className="py-3 pr-3 text-muted">
                     {fmtSynced(c.last_synced_at)}
                   </td>
-                  <td className="py-3.5">
+                  <td className="py-3">
                     <div className="flex items-center justify-end gap-2">
                       <form action={syncCompetitorAction}>
                         <input type="hidden" name="id" value={c.id} />
-                        <button className="rounded-full bg-neutral-900 px-3 py-1.5 text-xs font-medium text-white">
+                        <button className="rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-accent-ink transition-opacity hover:opacity-85">
                           Sync
                         </button>
                       </form>
                       <form action={removeCompetitor}>
                         <input type="hidden" name="id" value={c.id} />
-                        <button className="rounded-full border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-500 hover:border-flame hover:text-flame">
+                        <button className="rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-flame hover:text-flame">
                           Remove
                         </button>
                       </form>

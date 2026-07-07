@@ -28,7 +28,7 @@ export default async function AdminUsersPage() {
   const users = (profiles ?? []) as Profile[];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="stagger flex flex-col gap-6">
       <Topbar stat={`${users.length} accounts`} />
       <div>
         <h1 className="text-4xl font-semibold tracking-tight">Users</h1>

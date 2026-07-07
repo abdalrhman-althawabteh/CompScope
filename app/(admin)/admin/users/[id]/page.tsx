@@ -47,7 +47,7 @@ export default async function ManageUserPage({
     "rounded-xl border border-border bg-panel-2 px-3 py-2.5 text-sm text-fg outline-none focus:border-accent";
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="stagger flex flex-col gap-6">
       <Topbar stat="Manage account" />
       <Link href="/admin/users" className="text-sm text-muted hover:text-fg">
         ← Back to users

@@ -38,7 +38,7 @@ export default async function SettingsPage() {
   const history = (runs ?? []) as SyncRun[];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="stagger flex flex-col gap-6">
       <Topbar stat="Settings" />
       <div>
         <h1 className="text-4xl font-semibold tracking-tight">Settings</h1>
@@ -63,16 +63,16 @@ export default async function SettingsPage() {
           </p>
         </Card>
 
-        <Card variant="white">
+        <Card>
           <h2 className="mb-4 text-lg font-semibold">Sync history</h2>
           {history.length === 0 ? (
-            <p className="py-8 text-center text-sm text-neutral-400">
+            <p className="py-8 text-center text-sm text-faint">
               No syncs yet — runs appear here after the daily sync or a manual one.
             </p>
           ) : (
             <table className="w-full text-left">
               <thead>
-                <tr className="text-xs text-neutral-400">
+                <tr className="text-xs text-faint">
                   <th className="pb-3 font-normal">When</th>
                   <th className="pb-3 font-normal">Source</th>
                   <th className="pb-3 font-normal">Status</th>
@@ -81,21 +81,19 @@ export default async function SettingsPage() {
               </thead>
               <tbody>
                 {history.map((r) => (
-                  <tr key={r.id} className="border-t border-dashed border-neutral-200">
-                    <td className="py-3 pr-3 text-neutral-700">
+                  <tr key={r.id} className="border-t border-border">
+                    <td className="py-3 pr-3">
                       {new Date(r.started_at).toLocaleString()}
                     </td>
-                    <td className="py-3 pr-3 capitalize text-neutral-500">
-                      {r.source}
-                    </td>
+                    <td className="py-3 pr-3 capitalize text-muted">{r.source}</td>
                     <td className="py-3 pr-3">
                       <span
-                        className={`rounded-full px-3 py-1 text-xs font-medium ${statusCls[r.status] ?? "bg-neutral-100 text-neutral-600"}`}
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${statusCls[r.status] ?? "bg-panel-2 text-muted"}`}
                       >
                         {r.status}
                       </span>
                     </td>
-                    <td className="py-3 text-right font-semibold text-neutral-900">
+                    <td className="py-3 text-right font-semibold">
                       {r.videos_upserted}
                     </td>
                   </tr>

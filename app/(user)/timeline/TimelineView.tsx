@@ -44,7 +44,7 @@ export function TimelineView({
           ))}
         </div>
 
-        <div className="mt-3 flex flex-col gap-3">
+        <div className="stagger mt-3 flex flex-col gap-3">
           {competitors.map((c) => (
             <div key={c.id} className="flex items-center">
               <div className="flex w-40 shrink-0 items-center gap-2 pr-4">
@@ -91,7 +91,7 @@ export function TimelineView({
           onClick={() => setActive(null)}
         >
           <div
-            className="w-full max-w-md rounded-[var(--radius-card)] border border-border bg-panel p-6"
+            className="pop-in w-full max-w-md rounded-[var(--radius-card)] border border-border bg-panel p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4 flex items-center gap-2 text-sm text-muted">

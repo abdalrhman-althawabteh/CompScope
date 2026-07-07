@@ -7,27 +7,32 @@ export function BarChart({
 }) {
   return (
     <div className="flex h-64 gap-3">
-      {data.map((d) => (
+      {data.map((d, i) => (
         <div key={d.label} className="flex flex-1 flex-col gap-3">
           <div className="flex flex-1 items-end justify-center">
             <div
-              className={
-                "relative w-full max-w-[52px] rounded-xl " +
-                (d.highlight
-                  ? "bg-gradient-to-t from-[#242424] to-[#323232]"
-                  : "bg-[#1e1e1e]")
-              }
+              className="relative w-full max-w-[52px]"
               style={{ height: `${d.pct}%` }}
             >
               <div
                 className={
-                  "absolute inset-x-0 -top-0.5 h-1 rounded-full " +
-                  (d.highlight ? "bg-flame" : "bg-[#4a4a4a]")
+                  "bar-grow absolute inset-0 rounded-xl " +
+                  (d.highlight
+                    ? "bg-gradient-to-t from-[#242424] to-[#323232]"
+                    : "bg-[#1e1e1e]")
                 }
-              />
+                style={{ animationDelay: `${i * 60}ms` }}
+              >
+                <div
+                  className={
+                    "absolute inset-x-0 -top-0.5 h-1 rounded-full " +
+                    (d.highlight ? "bg-flame" : "bg-[#4a4a4a]")
+                  }
+                />
+              </div>
               <span
                 className={
-                  "absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap text-[11px] font-medium " +
+                  "fade-in absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap text-[11px] font-medium " +
                   (d.highlight
                     ? "rounded-md bg-white px-1.5 py-0.5 font-semibold text-black"
                     : "text-muted")
@@ -88,31 +93,33 @@ export function AreaChart({
           <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
         </linearGradient>
       </defs>
-      <path d={area} fill="url(#areaFill)" />
-      <path d={line} fill="none" stroke="#ffffff" strokeWidth="2.5" />
-      <circle cx={peak[0]} cy={peak[1]} r="5" fill="#fff" />
-      {peakLabel && (
-        <g transform={`translate(${peak[0]}, ${peak[1] - 22})`}>
-          <rect
-            x="-16"
-            y="-14"
-            width="32"
-            height="24"
-            rx="7"
-            fill="#fff"
-          />
-          <text
-            x="0"
-            y="3"
-            textAnchor="middle"
-            fontSize="13"
-            fontWeight="700"
-            fill="#000"
-          >
-            {peakLabel}
-          </text>
-        </g>
-      )}
+      <path d={area} fill="url(#areaFill)" className="fade-in" />
+      <path
+        d={line}
+        fill="none"
+        stroke="#ffffff"
+        strokeWidth="2.5"
+        pathLength={1}
+        className="chart-draw"
+      />
+      <g className="fade-in">
+        <circle cx={peak[0]} cy={peak[1]} r="5" fill="#fff" />
+        {peakLabel && (
+          <g transform={`translate(${peak[0]}, ${peak[1] - 22})`}>
+            <rect x="-16" y="-14" width="32" height="24" rx="7" fill="#fff" />
+            <text
+              x="0"
+              y="3"
+              textAnchor="middle"
+              fontSize="13"
+              fontWeight="700"
+              fill="#000"
+            >
+              {peakLabel}
+            </text>
+          </g>
+        )}
+      </g>
     </svg>
   );
 }

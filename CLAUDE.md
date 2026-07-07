@@ -33,7 +33,9 @@ tracks competitor channels, sees their uploads on a colored-dot **timeline**, an
 - `app/api/assistant/route.ts` — chat endpoint; persists to `ai_conversations`/`ai_messages`.
 - `lib/queries.ts` — server read helpers + `computeDashboard()` aggregates. `lib/format.ts` — `fmtViews`.
 - `app/actions/competitors.ts` — add/remove/sync competitor server actions.
-- `components/ui/` — `Sidebar`, `Topbar`, `Card`+`StatusPill`, `Charts` (SVG bar/area), `Placeholder`.
+- `components/ui/` — `Sidebar`, `Topbar`, `Card`+`StatusPill`, `Charts` (SVG bar/area, animated).
+- `app/(user)/dashboard/DashboardChat.tsx` — compact AI chat embedded on the dashboard's mint card
+  (same `/api/assistant` endpoint; "Full assistant" links to `/assistant?c=<id>`).
 - `components/icons.tsx` — inline SVG icons (no icon dep).
 - `middleware.ts` — session refresh + route gating (unauth → /login, non-admin → /dashboard on /admin/*).
 - `supabase/migrations/` — SQL to run in the Supabase SQL Editor.
@@ -41,9 +43,12 @@ tracks competitor channels, sees their uploads on a colored-dot **timeline**, an
 ## Design tokens (from the reference dashboard)
 Dark `#0a0a0a` bg with a warm top-left glow (`.app-glow`); lime accent `#c5f04a`; lavender `#b9a3e3`
 and mint `#b9e6a8` highlight cards; big rounded corners (`--radius-card`); left icon sidebar; status
-pills (hot=lavender, rising=green, flat=grey). Customer-facing tables (dashboard, competitors,
-settings) use the white `Card` variant; **admin tables are dark** for readability. Topbar shows brand +
-stat + avatar only (no search/notifications).
+pills (hot=lavender, rising=green, flat=grey). **All data tables are dark** except the dashboard's
+"Latest Videos" white card (reference look) — the user rejected white tables elsewhere. Topbar shows
+brand + stat + avatar only (no search/notifications).
+**Motion:** CSS-only in `globals.css` — `.rise` / `.stagger > *` page-load reveals, `.bar-grow(-x)`
+chart entrances, `.chart-draw` (needs `pathLength={1}`), `.fade-in`, `.pop-in`; all inside
+`prefers-reduced-motion: no-preference`. Apply `stagger` to a page's top-level column.
 
 ## Auth & roles
 - **Admin-only accounts.** No public sign-up — turn **OFF "Allow new users to sign up"** in Supabase
@@ -75,3 +80,7 @@ stat + avatar only (no search/notifications).
   only on production deploys.
 - **Phase 5 (done):** AI assistant grounded in each customer's data (`lib/ai/*`, `/api/assistant`),
   chat history in `ai_conversations`/`ai_messages` (`0004`), assistant chat UI, admin sees convo titles.
+- **UI overhaul (done):** CSS motion system (staggered reveals, animated charts); dashboard stat tiles
+  (competitors / uploads this week / avg views) + embedded `DashboardChat` replacing the ask-the-AI
+  link card; Competitors & Settings tables switched to dark (with channel thumbnails); real Analytics
+  page (views-share bars + per-competitor cards, top video); `Placeholder` component removed.

@@ -27,6 +27,10 @@ export type VideoRow = {
 const daysAgoISO = (n: number) =>
   new Date(Date.now() - n * 86_400_000).toISOString();
 
+// Cutoff timestamp N days ago. Module-scope so callers don't call Date.now() in render
+// (React 19 flags impure calls in component bodies).
+export const daysAgoTs = (n: number) => Date.now() - n * 86_400_000;
+
 export async function getCompetitors(
   supabase: SupabaseClient,
 ): Promise<CompetitorRow[]> {
